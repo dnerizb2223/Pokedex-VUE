@@ -1,17 +1,16 @@
 <!-- App.vue -->
 <template>
-  <PokemonDisplay>Adios</PokemonDisplay>
+  <PokemonDisplay>Hola</PokemonDisplay>
 </template>
 
 <script>
-import PokemonDisplay  from './components/PokemonDisplay.vue';
+import PokemonDisplay from './components/PokemonDisplay.vue';
+
 export default {
   components: {
     PokemonDisplay
   }
 };
-
-
 </script>
 
 <style scoped>
