@@ -1,6 +1,6 @@
 <!-- App.vue -->
 <template>
-  <PokemonDisplay>Hola</PokemonDisplay>
+    <PokemonDisplay>Hola</PokemonDisplay>
 </template>
 
 <script>
@@ -12,8 +12,12 @@ export default {
   }
 };
 </script>
-
 <style scoped>
+.pokedex{
+  width: 100%;
+  height: 100%;
+}
+
 #app {
   font-family: Arial, sans-serif;
   text-align: center;

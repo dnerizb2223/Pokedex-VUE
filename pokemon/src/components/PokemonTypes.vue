@@ -1,7 +1,7 @@
 <!-- /components/PokemonTypes.vue -->
 <template>
-    <div class="pokemon-types">
-        <div v-for="(type, index) in types" :key="index" class="pokemon-type">{{ type }}</div>
+    <div class="pokemon-types" :class="types.type.name">
+        <div class="pokemon-type">{{ types.type.name }}</div>
     </div>
 </template>
 
@@ -9,73 +9,77 @@
 export default {
   props: {
     types: {
-      type: Array,
+      types: Array,
       required: true
     }
   },
   mounted() {
-    console.log('Tipos de Pokémon:', this.types);
+    // console.log('Tipos de Pokémon:', this.types);
   }
 };
 </script>
 
 <style scoped>
 .pokemon-types {
-  display: flex;
-  flex-wrap: wrap;
+  border-radius: 5px;
+  padding: 4px;
+  text-align: center;
+  margin: 5px;
+  width: 100%;
+  display: inline;
+
 }
 
 .pokemon-type {
-  margin-right: 5px;
-  margin-bottom: 5px;
-  padding: 3px 8px;
+align-content: center;  margin: 5px;
+  width: 40%;
+  display: inline-block; 
   border-radius: 5px;
-  font-size: 12px;
-  color: white; /* Color de texto blanco */
+  color: rgb(255, 255, 255); 
 }
 
 .bug {
-  background-color: #a8b820; /* Color de fondo para tipo bug */
+  background-color: #a8b820; 
 }
 
 .dark {
-  background-color: #705848; /* Color de fondo para tipo dark */
+  background-color: #705848; 
 }
 
 .dragon {
-  background-color: #7038f8; /* Color de fondo para tipo dragon */
+  background-color: #7038f8; 
 }
 
 .electric {
-  background-color: #f8d030; /* Color de fondo para tipo electric */
+  background-color: #f8d030; 
 }
 
 .fairy {
-  background-color: #ee99ac; /* Color de fondo para tipo fairy */
+  background-color: #ee99ac; 
 }
 
 .fighting {
-  background-color: #c03028; /* Color de fondo para tipo fighting */
+  background-color: #c03028;
 }
 
 .fire {
-  background-color: #f08030; /* Color de fondo para tipo fire */
+  background-color: #f08030;
 }
 
 .flying {
-  background-color: #a890f0; /* Color de fondo para tipo flying */
+  background-color: #a890f0; 
 }
 
 .ghost {
-  background-color: #705898; /* Color de fondo para tipo ghost */
+  background-color: #705898; 
 }
 
 .grass {
-  background-color: #78c850; /* Color de fondo para tipo grass */
+  background-color: #78c850; 
 }
 
 .ground {
-  background-color: #e0c068; /* Color de fondo para tipo ground */
+  background-color: #e0c068;
 }
 
 .ice {
