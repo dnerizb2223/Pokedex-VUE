@@ -1,13 +1,19 @@
-<!-- /components/PokemonDislpay.vue -->
 <template>
-  <img class="pokemon-logo" src="../img/pokemon-logo.png" alt="pokemon-logo">
-  <div class="pokemon-grid">
-    <div v-for="(pokemon, index) in pokemons" :key="index" class="card" style="width: 18rem;">
-      <img class="card-img-top" :src="pokemon.sprites.other['official-artwork'].front_default" :alt="'Imagen de ' + pokemon.name">
-      <div class="card-body">
-          <h5 class="card-num">{{'N.'+ pokemon.id }}</h5>
-          <h1 class="card-title">{{ pokemon.name }}</h1>
-          <PokemonTypes v-for="typePoke in pokemon.types" :types="typePoke" :key="typePoke.slot"></PokemonTypes>
+  <div>
+    <img class="pokemon-logo" src="../img/pokemon-logo.png" alt="pokemon-logo">
+    <div class="button-container">
+      <button class="button" @click="showAll">Mostrar Todos</button>
+      <button class="button" @click="showFavorites">Mostrar Favoritos</button>
+    </div>
+    <div class="pokemon-grid">
+      <div v-for="(pokemon, index) in filteredPokemons" :key="index" class="card" style="width: 18rem;">
+        <img class="fav" src="../img/fav.png" alt="pokemon-logo" @click="toggleFavorite(pokemon)" :class="{ 'red': isFavorite(pokemon) }">
+        <img class="card-img-top" :src="pokemon.sprites.other['official-artwork'].front_default" :alt="'Imagen de ' + pokemon.name">
+        <div class="card-body">
+            <h5 class="card-num">{{'N.'+ pokemon.id }}</h5>
+            <h1 class="card-title">{{ pokemon.name }}</h1>
+            <PokemonTypes v-for="typePoke in pokemon.types" :types="typePoke" :key="typePoke.slot"></PokemonTypes>
+        </div>
       </div>
     </div>
   </div>
@@ -22,8 +28,19 @@ export default {
   },
   data() {
     return {
-      pokemons: []
+      pokemons: [],
+      favorites: JSON.parse(localStorage.getItem('favorites')) || [],
+      showOnlyFavorites: false
     };
+  },
+  computed: {
+    filteredPokemons() {
+      if (this.showOnlyFavorites) {
+        return this.pokemons.filter(pokemon => this.isFavorite(pokemon));
+      } else {
+        return this.pokemons;
+      }
+    }
   },
   mounted() {
     this.fetchPokemonData();
@@ -44,23 +61,51 @@ export default {
       } catch (error) {
         console.error('There was an ERROR: ', error);
       }
+    },
+    toggleFavorite(pokemon) {
+      const favoriteIndex = this.favorites.findIndex(favPokemon => favPokemon.id === pokemon.id);
+      if (favoriteIndex === -1) {
+        this.favorites.push(pokemon);
+      } else {
+        this.favorites.splice(favoriteIndex, 1);
+      }
+      localStorage.setItem('favorites', JSON.stringify(this.favorites));
+    },
+    isFavorite(pokemon) {
+      return this.favorites.some(favPokemon => favPokemon.id === pokemon.id);
+    },
+    showFavorites() {
+      this.showOnlyFavorites = true;
+    },
+    showAll() {
+      this.showOnlyFavorites = false;
     }
   }
 };
 </script>
-
 <style scoped>
-
-
-
+.fav{
+  position: relative;
+  top: 50px;
+  left: 260px;
+  height: 30px;
+  width: 30px;
+}
+.fav:hover{
+  cursor: pointer;
+}
+.fav.red  {
+  filter: grayscale(100%) brightness(1000%) invert(10%) sepia(10000%) saturate(100000000%) hue-rotate(340deg);
+}
 
 .pokemon-logo {
   position: relative;
-  height: 200px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  height: 100px;
+  top: 0%;
+  left: 55%;
+  transform: translate(-100%, -0%);
 }
+
 .pokemon-grid {
   display: flex;
   flex-wrap: wrap;
@@ -111,4 +156,28 @@ export default {
 .center-content {
   text-align: center;
 }
+
+.button-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.button:hover {
+  background-color: #45a049;
+}
+
 </style>
