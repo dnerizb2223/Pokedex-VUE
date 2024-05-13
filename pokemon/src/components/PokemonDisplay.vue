@@ -4,10 +4,19 @@
     <div class="button-container">
       <button class="button" @click="showAll">Mostrar Todos</button>
       <button class="button" @click="showFavorites">Mostrar Favoritos</button>
+      <button class="button" @click="showTeam">Mostrar Equipo</button>
+      <select v-model="selectedType" @change="filterByType">
+        <option value="">Seleccionar Tipo</option>
+        <option v-for="type in types" :key="type" :value="type">{{ type }}</option>
+      </select>
     </div>
+    <RangeSlider label="Desde" :min-value="1" :max-value="151" v-model="startRange" :to-value="endRange"></RangeSlider>
+    <RangeSlider label="Hasta" :min-value="1" :max-value="151" v-model="endRange" :from-value="startRange"></RangeSlider>
+    <button class="button" @click="applyRange">Aplicar Rango</button>
     <div class="pokemon-grid">
       <div v-for="(pokemon, index) in filteredPokemons" :key="index" class="card" style="width: 18rem;">
         <img class="fav" src="../img/fav.png" alt="pokemon-logo" @click="toggleFavorite(pokemon)" :class="{ 'red': isFavorite(pokemon) }">
+        <img class="equipo" src="../img/equipo.png" alt="equipo" @click="addToTeam(pokemon)" :class="{ 'red': isInTeam(pokemon) }">
         <img class="card-img-top" :src="pokemon.sprites.other['official-artwork'].front_default" :alt="'Imagen de ' + pokemon.name">
         <div class="card-body">
             <h5 class="card-num">{{'N.'+ pokemon.id }}</h5>
@@ -21,24 +30,36 @@
 
 <script>
 import PokemonTypes from './PokemonTypes.vue';
+import RangeSlider from './RangeSlider.vue';
 
 export default {
   components: {
-    PokemonTypes
+    PokemonTypes,
+    RangeSlider
   },
   data() {
     return {
       pokemons: [],
       favorites: JSON.parse(localStorage.getItem('favorites')) || [],
-      showOnlyFavorites: false
+      team: JSON.parse(localStorage.getItem('team')) || [],
+      showOnlyFavorites: false,
+      showTeamView: false,
+      selectedType: null,
+      types: ['normal', 'fuego', 'agua', 'planta', 'eléctrico', 'hielo', 'lucha', 'veneno', 'tierra', 'volador', 'psíquico', 'bicho', 'roca', 'fantasma', 'dragón', 'siniestro', 'acero', 'hada'],
+      startRange: 1,
+      endRange: 151
     };
   },
   computed: {
     filteredPokemons() {
       if (this.showOnlyFavorites) {
         return this.pokemons.filter(pokemon => this.isFavorite(pokemon));
+      } else if (this.showTeamView) {
+        return this.team;
+      } else if (this.selectedType) {
+        return this.pokemons.filter(pokemon => pokemon.types.some(typePoke => typePoke.type.name === this.selectedType));
       } else {
-        return this.pokemons;
+        return this.pokemons.filter(pokemon => pokemon.id >= this.startRange && pokemon.id <= this.endRange);
       }
     }
   },
@@ -74,28 +95,74 @@ export default {
     isFavorite(pokemon) {
       return this.favorites.some(favPokemon => favPokemon.id === pokemon.id);
     },
+    addToTeam(pokemon) {
+      const index = this.team.findIndex(teamPokemon => teamPokemon.id === pokemon.id);
+      if (index !== -1) {
+        this.team.splice(index, 1);
+      } else if (this.team.length < 6) {
+        this.team.push(pokemon);
+      } else {
+        return;
+      }
+      localStorage.setItem('team', JSON.stringify(this.team));
+    },
+    isInTeam(pokemon) {
+      return this.team.some(teamPokemon => teamPokemon.id === pokemon.id);
+    },
     showFavorites() {
       this.showOnlyFavorites = true;
+      this.selectedType = null; 
     },
     showAll() {
       this.showOnlyFavorites = false;
+      this.showTeamView = false;
+      this.selectedType = null; 
+    },
+    showTeam() {
+      this.showTeamView = true;
+      this.showOnlyFavorites = false;
+      this.selectedType = null; 
+    },
+    filterByType() {
+      if (this.selectedType === '') {
+        this.selectedType = null; 
+      } else {
+        this.showOnlyFavorites = false; 
+      }
     }
   }
 };
 </script>
+
+
+
 <style scoped>
-.fav{
+.fav {
   position: relative;
   top: 50px;
   left: 260px;
   height: 30px;
   width: 30px;
 }
-.fav:hover{
+.fav:hover {
   cursor: pointer;
 }
-.fav.red  {
+.fav.red {
   filter: grayscale(100%) brightness(1000%) invert(10%) sepia(10000%) saturate(100000000%) hue-rotate(340deg);
+}
+
+.equipo {
+  position: relative;
+  top: 50px;
+  left: 0px;
+  height: 30px;
+  width: 30px;
+}
+.equipo:hover {
+  cursor: pointer;
+}
+.equipo.red {
+  filter: grayscale(100%) brightness(1000%) invert(10%) sepia(10000%) saturate(100000000%) hue-rotate(150deg);
 }
 
 .pokemon-logo {
@@ -119,7 +186,7 @@ export default {
   width: 18rem; 
 }
 
-.card:hover{
+.card:hover {
   margin-top: -10px;
   transition: 0.5s;
 }
@@ -147,7 +214,7 @@ export default {
   float: right;
 }
 
-.card-num{
+.card-num {
   margin-left: 20px;
   font-size: large;
   color: #919191;
@@ -157,6 +224,12 @@ export default {
   text-align: center;
 }
 
+select {
+  padding: 10px;
+  border-radius: 4px;
+}
+
+/* Estilos de los botones */
 .button-container {
   text-align: center;
   margin-bottom: 20px;
@@ -179,5 +252,4 @@ export default {
 .button:hover {
   background-color: #45a049;
 }
-
 </style>
