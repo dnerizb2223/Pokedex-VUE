@@ -49,7 +49,8 @@ export default {
 
 <style scoped>
 .range-slider {
-  margin: 10px 0;
+  margin: 10px auto;
+  width: 30%; /* Ajusta el ancho según sea necesario */
 }
 
 input[type="range"] {

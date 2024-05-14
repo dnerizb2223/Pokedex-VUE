@@ -12,7 +12,9 @@
     </div>
     <RangeSlider label="Desde" :min-value="1" :max-value="151" v-model="startRange" :to-value="endRange"></RangeSlider>
     <RangeSlider label="Hasta" :min-value="1" :max-value="151" v-model="endRange" :from-value="startRange"></RangeSlider>
-    <button class="button" @click="applyRange">Aplicar Rango</button>
+    <div class="button-center">
+      <button class="button" @click="applyRange">Aplicar Rango</button>
+    </div>
     <div class="pokemon-grid">
       <div v-for="(pokemon, index) in filteredPokemons" :key="index" class="card" style="width: 18rem;">
         <img class="fav" src="../img/fav.png" alt="pokemon-logo" @click="toggleFavorite(pokemon)" :class="{ 'red': isFavorite(pokemon) }">
@@ -45,7 +47,7 @@ export default {
       showOnlyFavorites: false,
       showTeamView: false,
       selectedType: null,
-      types: ['normal', 'fuego', 'agua', 'planta', 'eléctrico', 'hielo', 'lucha', 'veneno', 'tierra', 'volador', 'psíquico', 'bicho', 'roca', 'fantasma', 'dragón', 'siniestro', 'acero', 'hada'],
+      types: ['normal', 'fire', 'water', 'grass', 'electric', 'ice', 'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug', 'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'],
       startRange: 1,
       endRange: 151
     };
@@ -129,12 +131,13 @@ export default {
       } else {
         this.showOnlyFavorites = false; 
       }
+    },
+    applyRange() {
+      // Lógica para aplicar el rango seleccionado
     }
   }
 };
 </script>
-
-
 
 <style scoped>
 .fav {
@@ -231,6 +234,11 @@ select {
 
 /* Estilos de los botones */
 .button-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.button-center {
   text-align: center;
   margin-bottom: 20px;
 }
